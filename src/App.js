@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { convertToFlag } from "./starter";
+import Weather from './weather';
 
 export default function App() {
 
@@ -8,7 +9,7 @@ export default function App() {
   const [displayLocation, setDisplayLocation] = useState("");
   const [weather, setWeather] = useState({});
 
-  async function fetchWeather() {
+  async function fetchWeather() { 
     try {
       setIsLoading(true);
       // 1) Getting location (geocoding)
@@ -29,9 +30,9 @@ export default function App() {
       );
       const weatherData = await weatherRes.json();
       setWeather(weatherData.daily);
-      
+
     } catch (err) {
-      console.err(err);
+      console.log(err);
     } finally {
       setIsLoading(false);
     }
@@ -41,10 +42,11 @@ export default function App() {
     <div className='app'>
       <h1>Classy Weather</h1>
       <div>
-        <input type='text' placeholder='Search for a city' value={location} onChange={(e) => setLocation(e.target.value)} />
+        <input type='text' placeholder='Search for a city...' value={location} onChange={(e) => setLocation(e.target.value)} />
       </div>
       <button onClick={fetchWeather}>Get Weather</button>
       {isLoading && <p className='loader'>Loading...</p>} 
+      {weather.weathercode && <Weather weather={weather} location={displayLocation}/>}  
     </div>
   )
 }
