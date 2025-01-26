@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { convertToFlag } from "./starter";
 import Weather from './weather';
 import Input from './input';
@@ -11,6 +11,9 @@ export default function App() {
   const [weather, setWeather] = useState({});
 
   async function fetchWeather() { 
+    if (!location) return;
+    if(location.length < 2) return setWeather({});
+
     try {
       setIsLoading(true);
       // 1) Getting location (geocoding)
@@ -33,18 +36,32 @@ export default function App() {
       setWeather(weatherData.daily);
 
     } catch (err) {
-      console.log(err);
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
   }
 
+  const handleFetchWeather = useCallback(fetchWeather, [location]);
+
+  useEffect(() => {
+    const storedLocation = localStorage.getItem("location");
+    if (storedLocation) setLocation(storedLocation);
+  }, []);
+
+  useEffect(() => {
+
+    if (!location) return;
+    handleFetchWeather();
+    localStorage.setItem("location", location);
+
+  }, [location, handleFetchWeather]);
+
   return (
     <div className='app'>
       <h1>Classy Weather</h1>
       <Input location={location} setLocation={setLocation}/>
-      <button onClick={fetchWeather}>Get Weather</button>
-      {isLoading && <p className='loader'>Loading...</p>} 
+      {isLoading ? <p className='loader'>Loading...</p> : <p className='loader'>_____________</p>} 
       {weather.weathercode && <Weather weather={weather} location={displayLocation}/>}  
     </div>
   )
