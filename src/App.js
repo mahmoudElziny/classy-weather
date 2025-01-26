@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { convertToFlag } from "./starter";
 import Weather from './weather';
+import Input from './input';
 
 export default function App() {
 
@@ -41,9 +42,7 @@ export default function App() {
   return (
     <div className='app'>
       <h1>Classy Weather</h1>
-      <div>
-        <input type='text' placeholder='Search for a city...' value={location} onChange={(e) => setLocation(e.target.value)} />
-      </div>
+      <Input location={location} setLocation={setLocation}/>
       <button onClick={fetchWeather}>Get Weather</button>
       {isLoading && <p className='loader'>Loading...</p>} 
       {weather.weathercode && <Weather weather={weather} location={displayLocation}/>}  
