@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { convertToFlag } from "./starter";
 import Weather from './weather';
 import Input from './input';
+import { useKey } from './useKey';
 
 export default function App() {
 
@@ -57,10 +58,17 @@ export default function App() {
 
   }, [location, handleFetchWeather]);
 
+  const inputEl = useRef(null);
+
+  useKey("Enter", function () {
+    if(document.activeElement === inputEl.current) return;
+        inputEl.current.focus();
+  });
+
   return (
     <div className='app'>
       <h1>Classy Weather</h1>
-      <Input location={location} setLocation={setLocation}/>
+      <Input location={location} setLocation={setLocation} inputEl={inputEl}/>
       {isLoading ? <p className='loader'>Loading...</p> : <p className='loader'>_____________</p>} 
       {weather.weathercode && <Weather weather={weather} location={displayLocation}/>}  
     </div>
